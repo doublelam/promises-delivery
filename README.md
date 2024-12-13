@@ -5,7 +5,7 @@ This package is used to manage multiple promises by giving a key, you can call r
 ## Install
 
 ```bash
-yarn install promises-delivery
+yarn add promises-delivery
 ```
 
 ## Usage
