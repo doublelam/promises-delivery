@@ -31,6 +31,15 @@ const delivery = new Delivery<string>();
 });
 ```
 
+## Methods
+```ts
+{
+    register: (key: string) => Promise<T>
+    resolve: (key: string, value: T) => void;
+    reject: (key: string, reason: string) => void
+}
+```
+
 ## Contribution
 
 ```bash
