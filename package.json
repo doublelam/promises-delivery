@@ -1,12 +1,13 @@
 {
   "name": "promises-delivery",
   "description": "This package is used to manage multiple promises by giving a key, you can call resolve or reject function out of the promise parameter callback and manage them by a key.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "./dist/index.js",
-  "type": "module",  
+  "type": "module",
+  "repository": "https://github.com/doublelam/promises-delivery",
   "types": "./types/index.d.ts",
   "source": "./src/index.ts",
-  "packageManager": "yarn@4.2.2",
+  "packageManager": "yarn@1.22.22",
   "devDependencies": {
     "@eslint/compat": "1.1.1",
     "@eslint/eslintrc": "3.2.0",
@@ -15,10 +16,17 @@
     "eslint": "9.9.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-jsx-a11y": "6.9.0",
     "eslint-plugin-prettier": "5.2.1",
     "prettier": "3.3.3",
     "typescript": "5.5.4"
   },
-  "keywords": ["js", "promise", "deferred", "resolve", "reject"]
+  "license": "MIT",
+  "author": "Lam <whatisurname7@gmail.com>",
+  "keywords": [
+    "js",
+    "promise",
+    "deferred",
+    "resolve",
+    "reject"
+  ]
 }
