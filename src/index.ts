@@ -80,6 +80,22 @@ class Delivery<T> {
     this.promises[key].reject(reason);
     delete this.promises[key];
   }
+
+  /**
+   * Returns the promise associated with the given key.
+   *
+   * This method finds the promise with the specified key and returns it.
+   *
+   * @param key - The unique identifier for the promise to be retrieved.
+   * @throws Will throw an error if a promise with the given key is not found.
+   * @returns {Promise<T>} The promise associated with the given key.
+   */
+  public getPromise(key: string): Promise<T> {
+    if (!this.promises[key]) {
+      throw new Error(`Promise with Key: ${key} is not found`);
+    }
+    return this.promises[key].promise;
+  }
 }
 
 export default Delivery;
