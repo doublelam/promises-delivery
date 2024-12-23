@@ -2,7 +2,12 @@
   "compilerOptions": {
     "target": "esnext",
     "outDir": "dist",
+    "module":"ESNext",
     "declaration": true,
     "declarationDir": "./types"
-  } 
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  }
 }

@@ -1,6 +1,9 @@
 import { describe, it } from 'mocha';
-import Delivery from '../dist/index.js';
-
+import Delivery, {
+  DeliveryError,
+  DeliveryErrorCode,
+  isDeliveryError,
+} from '../dist/index.js';
 describe('Delivery', () => {
   describe('register', () => {
     it('should successfully register a new key and return a promise', done => {
@@ -20,7 +23,7 @@ describe('Delivery', () => {
       }
     });
 
-    it('should throw an error when trying to register a key that already exists', done => {
+    it('should throw DeliveryError with PromiseAlreadyRegistered when registering existing key', done => {
       const delivery = new Delivery();
       const key = 'existingKey';
 
@@ -31,13 +34,35 @@ describe('Delivery', () => {
         done(new Error('Expected error was not thrown'));
       } catch (error) {
         if (
+          error instanceof DeliveryError &&
+          error.code === DeliveryErrorCode.PromiseAlreadyRegistered &&
           error.message === `Promise with Key: ${key} is already registered`
         ) {
           done();
         } else {
-          done(new Error('Unexpected error message'));
+          done(new Error('Unexpected error type or message'));
         }
       }
+    });
+
+    it('should reject with timeout error when timeout occurs', done => {
+      const delivery = new Delivery({ timeout: 500 });
+      const key = 'timeoutKey';
+      delivery
+        .register(key)
+        .then(() => {
+          done(new Error('Promise should have been rejected'));
+        })
+        .catch(error => {
+          if (
+            isDeliveryError(error) &&
+            error.code === DeliveryErrorCode.Timeout
+          ) {
+            done();
+          } else {
+            done(new Error('Unexpected error type or message'));
+          }
+        });
     });
   });
 
@@ -48,7 +73,9 @@ describe('Delivery', () => {
       const value = 'resolvedValue';
 
       const promise = delivery.register(key);
-      delivery.resolve(key, value);
+      setTimeout(() => {
+        delivery.resolve(key, value);
+      }, 200);
 
       promise
         .then(result => {
@@ -69,7 +96,9 @@ describe('Delivery', () => {
       const reason = 'rejectedReason';
 
       const promise = delivery.register(key);
-      delivery.reject(key, reason);
+      setTimeout(() => {
+        delivery.reject(key, reason);
+      }, 200);
 
       promise.catch(error => {
         if (error === reason) {

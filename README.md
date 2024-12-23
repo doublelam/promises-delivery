@@ -9,26 +9,24 @@ yarn add promises-delivery
 ```
 
 ## Usage
-*index.js*
+*index.ts*
 ```ts
 import Delivery from 'promises-delivery';
 
-const delivery = new Delivery<string>();
-[1,2,3,4,5,6,7,8,9,10].forEach(async v => {
-    // Register a promise by giving a key. it will return a promise.
-    const val = await delivery.register(`key-${v}`);
-    console.log('------',`key-${v}`, val);
-})
-```
-*where-else.js*
-```ts
-// pass delivery from outside
-[1,2,3,4,5,6,7,8,9,10].forEach(v => {
-    setTimeout(() => {
-    // resolve a promise by calling `resolve` with a key.
-    delivery.resolve(`key-${v}`, `Key: key-${v} resolved`)
-    }, 1000 * v)
-});
+// Initialize with default timeout
+const delivery = new Delivery<string>({ timeout: 1000 });
+
+// Register a promise with custom timeout
+const promise = delivery.register('uniqueKey', { timeout: 2000 });
+
+// Resolve the promise later
+delivery.resolve('uniqueKey', 'value');
+
+// Or reject it
+delivery.reject('uniqueKey', new Error('something went wrong'));
+
+// Get an existing promise
+const existingPromise = delivery.getPromise('uniqueKey');
 ```
 
 ## Methods
@@ -39,6 +37,43 @@ const delivery = new Delivery<string>();
     reject: (key: string, reason: string) => void
 }
 ```
+
+## Error Handling
+
+The library provides a custom `DeliveryError` class and error codes for different scenarios:
+
+```typescript
+import Delivery, { DeliveryError, DeliveryErrorCode, isDeliveryError } from 'promises-delivery';
+
+const delivery = new Delivery({ timeout: 1000 });
+
+try {
+  await delivery.register('key');
+  // or delivery.resolve(key, value);
+  // or delivery.reject(key, value);
+} catch (error) {
+  if (isDeliveryError(error)) {
+    switch (error.code) {
+      case DeliveryErrorCode.Timeout:
+        console.log('Promise timed out');
+        break;
+      case DeliveryErrorCode.PromiseNotFound:
+        console.log('Promise not found');
+        break;
+      case DeliveryErrorCode.PromiseAlreadyRegistered:
+        console.log('Promise already registered');
+        break;
+    }
+  }
+}
+```
+
+## Error Types
+| Error Code | Description |
+| --- | ----------- |
+| `TIMEOUT` | Promise execution exceeded timeout limit |
+| `PROMISE_NOT_FOUND` | Attempted to access a non-existent promise |
+| `PROMISE_ALREADY_REGISTERED` | Attempted to register a duplicate key |
 
 ## Contribution
 
